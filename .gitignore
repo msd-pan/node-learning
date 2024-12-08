@@ -8,4 +8,5 @@ node_modules/
 *.log
 
 # 忽略特定文件夹
-
+/build/
+/dist/
