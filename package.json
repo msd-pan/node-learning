@@ -15,7 +15,10 @@
   },
   "dependencies": {
     "body-parser": "^1.20.3",
+    "ejs": "^3.1.10",
     "express": "^4.21.2",
-    "node-learning": "file:"
+    "express-handlebars": "^8.0.1",
+    "node-learning": "file:",
+    "pug": "^3.0.3"
   }
 }

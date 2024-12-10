@@ -7,6 +7,9 @@ const rootDir = require("./util/path");
 
 const app = express();
 
+app.set("view engine", "pug");
+app.set("views", "views"); //seting the views folder explicitly, you don't have to if the views folder's name is views,otherwise it's necessary
+
 const adminData = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
 
