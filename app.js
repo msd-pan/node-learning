@@ -51,5 +51,5 @@ app.use(errorController.get404);
 // 启动服务器并监听 3000 端口
 // Start the server and listen on port 3000
 app.listen(3000, () => {
-  console.log("Server is running on http://localhost:3000");
+  // console.log("Server is running on http://localhost:3000");
 });
