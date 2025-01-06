@@ -7,13 +7,15 @@ const path = require("path");
 const express = require("express");
 const bodyParser = require("body-parser");
 
-// 创建Express应用实例
-// Create an Express application instance
-const app = express();
-
 // 引入自定义的错误控制器
 // Import custom error controller
 const errorController = require("./controllers/error");
+
+const db = require("./util/database");
+
+// 创建Express应用实例
+// Create an Express application instance
+const app = express();
 
 // 设置模板引擎为 EJS
 // Set the view engine to EJS
@@ -27,6 +29,8 @@ app.set("views", "views");
 // Import custom routing modules
 const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
+
+db.execute("selete * from products");
 
 // 使用 body-parser 解析表单数据
 // Use body-parser to parse incoming form data
