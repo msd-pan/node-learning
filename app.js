@@ -30,14 +30,6 @@ app.set("views", "views");
 const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
 
-db.execute("select * from products")
-  .then((result) => {
-    console.log(result);
-  })
-  .catch((err) => {
-    console.log(err);
-  });
-
 // 使用 body-parser 解析表单数据
 // Use body-parser to parse incoming form data
 app.use(bodyParser.urlencoded({ extended: false }));
