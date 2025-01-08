@@ -11,6 +11,7 @@
   "author": "carlos",
   "license": "ISC",
   "devDependencies": {
+    "@types/sequelize": "^4.28.20",
     "nodemon": "^3.1.7"
   },
   "dependencies": {
