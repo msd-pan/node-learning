@@ -12,6 +12,8 @@ const bodyParser = require("body-parser");
 const errorController = require("./controllers/error");
 
 const sequelize = require("./util/database");
+const Product = require("./models/product");
+const User = require("./models/user");
 
 // 创建Express应用实例
 // Create an Express application instance
@@ -50,8 +52,11 @@ app.use(shopRoutes);
 // Use the error controller to handle 404 errors (Page Not Found)
 app.use(errorController.get404);
 
+Product.belongsTo(User, { constraints: true, onDelete: "CASCADE" });
+User.hasMany(Product);
+
 sequelize
-  .sync()
+  .sync({ force: true })
   .then((result) => {
     // 启动服务器并监听 3000 端口
     // Start the server and listen on port 3000
