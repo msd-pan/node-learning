@@ -1,51 +1,57 @@
 const Product = require("../models/product");
 const Cart = require("../models/cart");
 
-exports.getProducts = (req, res, next) => {
-  Product.findAll()
-    .then((products) => {
-      res.render("shop/product-list", {
-        prods: products,
-        pageTitle: "All products",
-        path: "/products",
-      });
-    })
-    .catch((err) => console.log(err));
+exports.getProducts = async (req, res, next) => {
+  try {
+    const products = await Product.findAll();
+    res.render("shop/product-list", {
+      prods: products,
+      pageTitle: "All products",
+      path: "/products",
+    });
+  } catch (err) {
+    console.log(err);
+  }
 };
 
-exports.getProduct = (req, res, next) => {
+exports.getProduct = async (req, res, next) => {
   const prodId = req.params.productId;
 
   // the retrieving way with 'where' condition
-  // Product.findAll({ where: { id: prodId } })
-  //   .then((products) => {
-  //     res.render("shop/product-detail", {
-  //       product: products[0],
-  //       pageTitle: products[0].title,
-  //       path: "/products",
-  //     });
-  //   })
-  //   .catch((err) => console.log(err));
+  try {
+    const products = await Product.findAll({ where: { id: prodId } });
+    res.render("shop/product-detail", {
+      product: products[0],
+      pageTitle: products[0].title,
+      path: "/products",
+    });
+  } catch (err) {
+    console.log(err);
+  }
 
-  Product.findByPk(prodId).then((product) => {
+  try {
+    const product = await Product.findByPk(prodId);
     res.render("shop/product-detail", {
       product: product,
       pageTitle: product.title,
       path: "/products",
     });
-  });
+  } catch (err) {
+    console.log(err);
+  }
 };
 
-exports.getIndex = (req, res, next) => {
-  Product.findAll()
-    .then((products) => {
-      res.render("shop/index", {
-        prods: products,
-        pageTitle: "Shop",
-        path: "/",
-      });
-    })
-    .catch((err) => console.log(err));
+exports.getIndex = async (req, res, next) => {
+  try {
+    const products = await Product.findAll();
+    res.render("shop/index", {
+      prods: products,
+      pageTitle: "Shop",
+      path: "/",
+    });
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 exports.getCart = (req, res, next) => {

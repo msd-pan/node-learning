@@ -55,15 +55,17 @@ app.use(errorController.get404);
 Product.belongsTo(User, { constraints: true, onDelete: "CASCADE" });
 User.hasMany(Product);
 
-sequelize
-  .sync({ force: true })
-  .then((result) => {
+const startServer = async () => {
+  try {
+    await sequelize.sync({ force: false });
     // 启动服务器并监听 3000 端口
     // Start the server and listen on port 3000
     app.listen(3000, () => {
       // console.log("Server is running on http://localhost:3000");
     });
-  })
-  .catch((err) => {
+  } catch (err) {
     console.log(err);
-  });
+  }
+};
+
+startServer();
