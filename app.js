@@ -11,7 +11,7 @@ const bodyParser = require("body-parser");
 // Import custom error controller
 const errorController = require("./controllers/error");
 
-const db = require("./util/database");
+const sequelize = require("./util/database");
 
 // 创建Express应用实例
 // Create an Express application instance
@@ -50,8 +50,15 @@ app.use(shopRoutes);
 // Use the error controller to handle 404 errors (Page Not Found)
 app.use(errorController.get404);
 
-// 启动服务器并监听 3000 端口
-// Start the server and listen on port 3000
-app.listen(3000, () => {
-  // console.log("Server is running on http://localhost:3000");
-});
+sequelize
+  .sync()
+  .then((result) => {
+    // 启动服务器并监听 3000 端口
+    // Start the server and listen on port 3000
+    app.listen(3000, () => {
+      // console.log("Server is running on http://localhost:3000");
+    });
+  })
+  .catch((err) => {
+    console.log(err);
+  });
