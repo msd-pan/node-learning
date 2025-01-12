@@ -40,6 +40,16 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // Serve static files from the 'public' directory
 app.use(express.static(path.join(__dirname, "public")));
 
+app.use(async (req, res, next) => {
+  try {
+    const user = await User.findByPk(1);
+    req.user = user;
+    next();
+  } catch (err) {
+    console.log(err);
+  }
+});
+
 // 将以 '/admin' 开头的路由交由 adminRoutes 处理
 // Route requests starting with '/admin' to adminRoutes
 app.use("/admin", adminRoutes);
@@ -58,6 +68,13 @@ User.hasMany(Product);
 const startServer = async () => {
   try {
     await sequelize.sync({ force: false });
+
+    let user = await User.findByPk(1);
+    if (!user) {
+      user = await User.create({ name: "Max", email: "test@test.com" });
+    }
+
+    // console.log(user);
     // 启动服务器并监听 3000 端口
     // Start the server and listen on port 3000
     app.listen(3000, () => {
