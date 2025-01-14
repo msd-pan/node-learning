@@ -73,8 +73,8 @@ exports.postCart = async (req, res, next) => {
   try {
     const fetchedCart = await req.user.getCart();
     const products = await fetchedCart.getProducts({ where: { id: prodId } });
-    let product,
-      newQuantity = 1;
+    let product;
+    let newQuantity = 1;
     if (products.length > 0) product = products[0];
 
     if (product) {
