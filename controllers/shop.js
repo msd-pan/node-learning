@@ -57,7 +57,7 @@ exports.getIndex = async (req, res, next) => {
 exports.getCart = async (req, res, next) => {
   try {
     const cart = await req.user.getCart();
-    const products = await cart.getProducts();
+    const cartProducts = await cart.getProducts();
     res.render("shop/cart", {
       path: "/cart",
       pageTitle: "Your Cart",
@@ -68,12 +68,28 @@ exports.getCart = async (req, res, next) => {
   }
 };
 
-exports.postCart = (req, res, next) => {
+exports.postCart = async (req, res, next) => {
   const prodId = req.body.productId;
-  Product.findById(prodId, (product) => {
-    Cart.addProduct(prodId, product.price);
-  });
-  res.redirect("/cart");
+  try {
+    const fetchedCart = await req.user.getCart();
+    const products = await fetchedCart.getProducts({ where: { id: prodId } });
+    let product,
+      newQuantity = 1;
+    if (products.length > 0) product = products[0];
+
+    if (product) {
+      const oldQuantity = product.cartItem.quantity;
+      newQuantity = oldQuantity + 1;
+    } else product = await Product.findByPk(prodId);
+
+    await fetchedCart.addProduct(product, {
+      through: { quantity: newQuantity },
+    });
+
+    res.redirect("/cart");
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 exports.postCartDeleteProduct = (req, res, next) => {
