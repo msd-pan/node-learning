@@ -79,6 +79,8 @@ const startServer = async () => {
     if (!user) {
       user = await User.create({ name: "Max", email: "test@test.com" });
     }
+    // create a cart
+    user.createCart();
 
     // console.log(user);
     // 启动服务器并监听 3000 端口
