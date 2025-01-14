@@ -31,7 +31,13 @@ exports.getEditProduct = async (req, res, next) => {
   }
   const prodId = req.params.productId;
   try {
-    const product = await Product.findByPk(prodId);
+    // find an item by it's primary key
+    // const product = await Product.findByPk(prodId);
+
+    // find products with user's id with where condition
+    const products = await req.user.getProducts({ where: { id: prodId } });
+    const product = products[0];
+
     if (!product) {
       return res.redirect("/");
     }
@@ -61,7 +67,7 @@ exports.postEditProduct = async (req, res, next) => {
 
 exports.getProducts = async (req, res, next) => {
   try {
-    const products = await Product.findAll();
+    const products = await req.user.getProducts();
     res.render("admin/products", {
       prods: products,
       pageTitle: "Admin Products",
