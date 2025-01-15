@@ -120,22 +120,23 @@ exports.postOrder = async (req, res, next) => {
       })
     );
 
+    await cart.setProducts(null);
     res.redirect("/orders");
   } catch (err) {
     console.log(err);
   }
 };
 
-exports.getOrders = (req, res, next) => {
-  res.render("shop/orders", {
-    path: "/orders",
-    pageTitle: "Your Orders",
-  });
-};
+exports.getOrders = async (req, res, next) => {
+  try {
+    const orders = await req.user.getOrders({ include: ["products"] });
 
-exports.getCheckout = (req, res, next) => {
-  res.render("shop/checkout", {
-    path: "/checkout",
-    pageTitle: "Checkout",
-  });
+    res.render("shop/orders", {
+      path: "/orders",
+      pageTitle: "Your Orders",
+      orders,
+    });
+  } catch (err) {
+    console.log(err);
+  }
 };
