@@ -108,6 +108,24 @@ exports.postCartDeleteProduct = async (req, res, next) => {
   }
 };
 
+exports.postOrder = async (req, res, next) => {
+  try {
+    const cart = await req.user.getCart();
+    const products = await cart.getProducts();
+    const order = await req.user.createOrder();
+    await order.addProducts(
+      products.map((product) => {
+        product.orderItem = { quantity: product.cartItem.quantity };
+        return product;
+      })
+    );
+
+    res.redirect("/orders");
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 exports.getOrders = (req, res, next) => {
   res.render("shop/orders", {
     path: "/orders",
