@@ -59,7 +59,6 @@ app.use("/admin", adminRoutes);
 // Use the error controller to handle 404 errors (Page Not Found)
 app.use(errorController.get404);
 
-mongoConnect((client) => {
-  console.log(client);
+mongoConnect(() => {
   app.listen(3000);
 });
