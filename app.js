@@ -26,7 +26,7 @@ app.set("views", "views");
 
 // 引入自定义路由模块
 // Import custom routing modules
-// const adminRoutes = require("./routes/admin");
+const adminRoutes = require("./routes/admin");
 // const shopRoutes = require("./routes/shop");
 
 // 使用 body-parser 解析表单数据
@@ -49,7 +49,7 @@ app.use(async (req, res, next) => {
 
 // 将以 '/admin' 开头的路由交由 adminRoutes 处理
 // Route requests starting with '/admin' to adminRoutes
-// app.use("/admin", adminRoutes);
+app.use("/admin", adminRoutes);
 
 // 将其他匹配的路由交由 shopRoutes 处理
 // Route other requests to shopRoutes
