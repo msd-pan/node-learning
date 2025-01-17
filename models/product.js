@@ -12,7 +12,7 @@ class Product {
     try {
       const db = getDb();
       const result = await db.collection("products").insertOne(this);
-      console.log(result);
+      console.log("result", result);
     } catch (err) {
       console.log(err);
     }
