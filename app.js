@@ -10,14 +10,7 @@ const bodyParser = require("body-parser");
 // 引入自定义的错误控制器
 // Import custom error controller
 const errorController = require("./controllers/error");
-
-const sequelize = require("./util/database");
-const Product = require("./models/product");
-const User = require("./models/user");
-const Cart = require("./models/cart");
-const CartItem = require("./models/cart-item");
-const Order = require("./models/order");
-const OrderItem = require("./models/order-item");
+const mongoConnect = require("./util/database");
 
 // 创建Express应用实例
 // Create an Express application instance
@@ -33,8 +26,8 @@ app.set("views", "views");
 
 // 引入自定义路由模块
 // Import custom routing modules
-const adminRoutes = require("./routes/admin");
-const shopRoutes = require("./routes/shop");
+// const adminRoutes = require("./routes/admin");
+// const shopRoutes = require("./routes/shop");
 
 // 使用 body-parser 解析表单数据
 // Use body-parser to parse incoming form data
@@ -45,57 +38,28 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use(async (req, res, next) => {
-  try {
-    const user = await User.findByPk(1);
-    req.user = user;
-    next();
-  } catch (err) {
-    console.log(err);
-  }
+  // try {
+  //   const user = await User.findByPk(1);
+  //   req.user = user;
+  //   next();
+  // } catch (err) {
+  //   console.log(err);
+  // }
 });
 
 // 将以 '/admin' 开头的路由交由 adminRoutes 处理
 // Route requests starting with '/admin' to adminRoutes
-app.use("/admin", adminRoutes);
+// app.use("/admin", adminRoutes);
 
 // 将其他匹配的路由交由 shopRoutes 处理
 // Route other requests to shopRoutes
-app.use(shopRoutes);
+// app.use(shopRoutes);
 
 // 使用错误控制器处理 404 错误（未找到页面）
 // Use the error controller to handle 404 errors (Page Not Found)
 app.use(errorController.get404);
 
-Product.belongsTo(User, { constraints: true, onDelete: "CASCADE" });
-User.hasMany(Product); // (optional) a one-direction-difination is enough
-User.hasOne(Cart);
-Cart.belongsTo(User);
-Cart.belongsToMany(Product, { through: CartItem });
-Product.belongsToMany(Cart, { through: CartItem });
-Order.belongsTo(User);
-User.hasMany(Order);
-Order.belongsToMany(Product, { through: OrderItem });
-
-const startServer = async () => {
-  try {
-    await sequelize.sync({ force: false });
-
-    let user = await User.findByPk(1);
-    if (!user) {
-      user = await User.create({ name: "Max", email: "test@test.com" });
-    }
-    // create a cart
-    user.createCart();
-
-    // console.log(user);
-    // 启动服务器并监听 3000 端口
-    // Start the server and listen on port 3000
-    app.listen(3000, () => {
-      // console.log("Server is running on http://localhost:3000");
-    });
-  } catch (err) {
-    console.log(err);
-  }
-};
-
-startServer();
+mongoConnect((client) => {
+  console.log(client);
+  app.listen(3000);
+});

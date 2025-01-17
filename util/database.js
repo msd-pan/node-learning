@@ -1,9 +1,15 @@
-const { Sequelize } = require("sequelize");
-// use { Sequelize } instead of Sequelize to Activate NodeJS Sequelize Intellisense VS Code
+const mongodb = require("mongodb");
+const MongoClient = mongodb.MongoClient;
 
-const sequelize = new Sequelize("node-complete", "root", "msd123456", {
-  dialect: "mysql",
-  host: "localhost",
-});
+const mongoConnect = async (callback) => {
+  try {
+    await MongoClient.connect(
+      "mongodb+srv://xiaoka:kjnDrVAOaVXZdbQk@cluster0.0bsg4.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+    );
+    console.log("Connected!!");
+  } catch (err) {
+    console.log(err);
+  }
+};
 
-module.exports = sequelize;
+module.exports = mongoConnect;
