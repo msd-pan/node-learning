@@ -8,29 +8,15 @@ class Product {
     this.imageUrl = imageUrl;
   }
 
-  save() {}
+  async save() {
+    try {
+      const db = getDb();
+      const result = await db.collection("products").insertOne(this);
+      console.log(result);
+    } catch (err) {
+      console.log(err);
+    }
+  }
 }
 
-const product = sequelize.define("product", {
-  id: {
-    type: Sequelize.INTEGER,
-    autoIncrement: true,
-    allowNull: false,
-    primaryKey: true,
-  },
-  title: Sequelize.STRING,
-  price: {
-    type: Sequelize.DOUBLE,
-    allowNull: false,
-  },
-  imageUrl: {
-    type: Sequelize.STRING,
-    allowNull: false,
-  },
-  description: {
-    type: Sequelize.STRING,
-    allowNull: false,
-  },
-});
-
-module.exports = product;
+module.exports = Product;

@@ -10,7 +10,7 @@ const bodyParser = require("body-parser");
 // 引入自定义的错误控制器
 // Import custom error controller
 const errorController = require("./controllers/error");
-const mongoConnect = require("./util/database");
+const mongoConnect = require("./util/database").mongoConnect;
 
 // 创建Express应用实例
 // Create an Express application instance
@@ -45,6 +45,7 @@ app.use(async (req, res, next) => {
   // } catch (err) {
   //   console.log(err);
   // }
+  next();
 });
 
 // 将以 '/admin' 开头的路由交由 adminRoutes 处理
