@@ -27,7 +27,7 @@ app.set("views", "views");
 // 引入自定义路由模块
 // Import custom routing modules
 const adminRoutes = require("./routes/admin");
-// const shopRoutes = require("./routes/shop");
+const shopRoutes = require("./routes/shop");
 
 // 使用 body-parser 解析表单数据
 // Use body-parser to parse incoming form data
@@ -54,7 +54,7 @@ app.use("/admin", adminRoutes);
 
 // 将其他匹配的路由交由 shopRoutes 处理
 // Route other requests to shopRoutes
-// app.use(shopRoutes);
+app.use(shopRoutes);
 
 // 使用错误控制器处理 404 错误（未找到页面）
 // Use the error controller to handle 404 errors (Page Not Found)
