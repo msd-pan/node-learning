@@ -54,6 +54,18 @@ class Product {
       console.log(err);
     }
   }
+
+  static async deleteById(prodId) {
+    const db = getDb();
+
+    try {
+      await db
+        .collection("products")
+        .deleteOne({ _id: new mongodb.ObjectId(prodId) });
+    } catch (err) {
+      console.log(err);
+    }
+  }
 }
 
 module.exports = Product;

@@ -72,14 +72,13 @@ exports.getProducts = async (req, res, next) => {
   }
 };
 
-// exports.postDeleteProduct = async (req, res, next) => {
-//   const prodId = req.body.prodId;
-//   try {
-//     const product = await Product.findByPk(prodId);
-//     await product.destroy();
-//     console.log("PRODUCT DELETED!");
-//     res.redirect("/admin/products");
-//   } catch (err) {
-//     console.log(err);
-//   }
-// };
+exports.postDeleteProduct = async (req, res, next) => {
+  const prodId = req.body.prodId;
+  try {
+    await Product.deleteById(prodId);
+    console.log("PRODUCT DELETED!");
+    res.redirect("/admin/products");
+  } catch (err) {
+    console.log(err);
+  }
+};
