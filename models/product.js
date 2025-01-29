@@ -14,6 +14,15 @@ class Product {
   async save() {
     try {
       const db = getDb();
+      let dbOp;
+      if (this._id) {
+        // update the product
+        dbOp = db
+          .collection("products")
+          .updateOne({ _id: new mongodb.ObjectId(this._id) }, { $set: this });
+      } else {
+        dbOp = db.collection("products").insertOne(this);
+      }
       const result = await db.collection("products").insertOne(this);
       console.log("result", result);
     } catch (err) {
@@ -24,15 +33,6 @@ class Product {
   static async fetchAll() {
     try {
       const db = getDb();
-      let dbOp;
-      if (this._id) {
-        // update the product
-        dbOp = db
-          .collection("products")
-          .updateOne({ _id: new mongodb.ObjectId(this._id) }, { $set: this });
-      } else {
-        dbOp = db.collection("products").insertOne(this);
-      }
 
       const products = await db.collection("products").find().toArray();
       console.log(products);
