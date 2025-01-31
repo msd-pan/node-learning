@@ -11,6 +11,7 @@ const bodyParser = require("body-parser");
 // Import custom error controller
 const errorController = require("./controllers/error");
 const mongoConnect = require("./util/database").mongoConnect;
+const User = require("./models/user");
 
 // 创建Express应用实例
 // Create an Express application instance
@@ -38,13 +39,13 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use(async (req, res, next) => {
-  // try {
-  //   const user = await User.findByPk(1);
-  //   req.user = user;
-  //   next();
-  // } catch (err) {
-  //   console.log(err);
-  // }
+  try {
+    const user = await User.findByPk("679caf1949aab05342e7fe94");
+    req.user = user;
+    next();
+  } catch (err) {
+    console.log(err);
+  }
   next();
 });
 
