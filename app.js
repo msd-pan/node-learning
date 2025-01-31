@@ -40,13 +40,12 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use(async (req, res, next) => {
   try {
-    const user = await User.findByPk("679caf1949aab05342e7fe94");
+    const user = await User.findById("679caf1949aab05342e7fe94");
     req.user = user;
     next();
   } catch (err) {
     console.log(err);
   }
-  next();
 });
 
 // 将以 '/admin' 开头的路由交由 adminRoutes 处理
