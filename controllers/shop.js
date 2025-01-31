@@ -72,22 +72,22 @@ exports.getCart = async (req, res, next) => {
 exports.postCart = async (req, res, next) => {
   const prodId = req.body.productId;
   try {
-    const fetchedCart = await req.user.getCart();
-    const products = await fetchedCart.getProducts({ where: { id: prodId } });
-    let product;
-    let newQuantity = 1;
-    if (products.length > 0) product = products[0];
+    const product = await Product.findById(prodId);
 
-    if (product) {
-      const oldQuantity = product.cartItem.quantity;
-      newQuantity = oldQuantity + 1;
-    } else product = await Product.findByPk(prodId);
-
-    await fetchedCart.addProduct(product, {
-      through: { quantity: newQuantity },
-    });
-
-    res.redirect("/cart");
+    await req.user.addToCart(product);
+    // const fetchedCart = await req.user.getCart();
+    // const products = await fetchedCart.getProducts({ where: { id: prodId } });
+    // let product;
+    // let newQuantity = 1;
+    // if (products.length > 0) product = products[0];
+    // if (product) {
+    //   const oldQuantity = product.cartItem.quantity;
+    //   newQuantity = oldQuantity + 1;
+    // } else product = await Product.findByPk(prodId);
+    // await fetchedCart.addProduct(product, {
+    //   through: { quantity: newQuantity },
+    // });
+    // res.redirect("/cart");
   } catch (err) {
     console.log(err);
   }
