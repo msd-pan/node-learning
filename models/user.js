@@ -56,6 +56,32 @@ class User {
     }
   }
 
+  async getCart() {
+    try {
+      const db = getDb();
+      const productIds = this.cart.items.map((i) => {
+        return i.productId;
+      });
+      let products = await db
+        .collection("products")
+        .find({ _id: { $in: productIds } })
+        .toArray();
+
+      products = await products.map((p) => {
+        return {
+          ...p,
+          quantity: this.cart.items.find((i) => {
+            return i.productId.toString() === p._id.toString();
+          }).quantity,
+        };
+      });
+
+      return products;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   static async findById(userId) {
     const db = getDb();
 
