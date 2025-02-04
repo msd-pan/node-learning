@@ -86,7 +86,7 @@ exports.postCart = async (req, res, next) => {
     // await fetchedCart.addProduct(product, {
     //   through: { quantity: newQuantity },
     // });
-    // res.redirect("/cart");
+    res.redirect("/cart");
   } catch (err) {
     console.log(err);
   }
