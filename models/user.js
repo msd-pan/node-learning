@@ -114,7 +114,15 @@ class User {
     const db = getDb();
 
     try {
-      await db.collection("orders").insertOne(this.cart);
+      const products = await this.getCart();
+      const order = {
+        items: products,
+        user: {
+          _id: new ObjectId(this._id),
+          username: this.username,
+        },
+      };
+      await db.collection("orders").insertOne(order);
 
       this.cart = { items: [] };
       const result = await db
