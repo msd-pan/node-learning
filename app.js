@@ -6,11 +6,11 @@ const path = require("path");
 // Import third-party modules 'express' and 'body-parser'
 const express = require("express");
 const bodyParser = require("body-parser");
+const mongoose = require("mongoose");
 
 // 引入自定义的错误控制器
 // Import custom error controller
 const errorController = require("./controllers/error");
-const mongoConnect = require("./util/database").mongoConnect;
 const User = require("./models/user");
 
 // 创建Express应用实例
@@ -60,6 +60,15 @@ app.use(shopRoutes);
 // Use the error controller to handle 404 errors (Page Not Found)
 app.use(errorController.get404);
 
-mongoConnect(() => {
-  app.listen(3000);
-});
+const satrtServer = async () => {
+  try {
+    await mongoose.connect(
+      "mongodb+srv://xiaoka:kjnDrVAOaVXZdbQk@cluster0.0bsg4.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+    );
+    app.listen(3000);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+satrtServer();
