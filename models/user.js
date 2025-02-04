@@ -138,6 +138,18 @@ class User {
     }
   }
 
+  async getOrders() {
+    const db = getDb();
+    try {
+      return await db
+        .collection("orders")
+        .find({ "user._id": new ObjectId(this._id) })
+        .toArray();
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   static async findById(userId) {
     const db = getDb();
 
