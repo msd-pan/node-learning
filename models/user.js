@@ -2,7 +2,7 @@ const mongodb = require("mongodb");
 
 const getDb = require("../util/database").getDb;
 
-const ObjectId = mongodb.ObjectId;
+const { ObjectId } = require("mongodb");
 
 class User {
   constructor(username, email, cart, id) {
@@ -16,7 +16,7 @@ class User {
     try {
       const db = getDb();
 
-      const result = await db.collection("users").insertOne(this);
+      await db.collection("users").insertOne(this);
     } catch (err) {
       console.log(err);
     }
@@ -79,6 +79,34 @@ class User {
       return products;
     } catch (err) {
       console.log(err);
+    }
+  }
+
+  async deleteItemFromCart(productId) {
+    try {
+      if (!productId) {
+        console.log("错误: 传入的 productId 为空!");
+        return;
+      }
+
+      const productObjectId = new ObjectId(productId); // 确保转换为 ObjectId
+
+      const updatedCartItems = this.cart.items.filter((item) => {
+        return !item.productId.equals(productObjectId); // 用 .equals() 进行 ObjectId 比较
+      });
+
+      const db = getDb();
+      const result = await db
+        .collection("users")
+        .updateOne(
+          { _id: new ObjectId(this._id) },
+          { $set: { cart: { items: updatedCartItems } } }
+        );
+
+      console.log("数据库更新结果:", result);
+    } catch (err) {
+      console.log(err);
+      throw err;
     }
   }
 

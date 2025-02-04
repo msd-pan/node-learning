@@ -74,18 +74,7 @@ exports.postCart = async (req, res, next) => {
     const product = await Product.findById(prodId);
 
     await req.user.addToCart(product);
-    // const fetchedCart = await req.user.getCart();
-    // const products = await fetchedCart.getProducts({ where: { id: prodId } });
-    // let product;
-    // let newQuantity = 1;
-    // if (products.length > 0) product = products[0];
-    // if (product) {
-    //   const oldQuantity = product.cartItem.quantity;
-    //   newQuantity = oldQuantity + 1;
-    // } else product = await Product.findByPk(prodId);
-    // await fetchedCart.addProduct(product, {
-    //   through: { quantity: newQuantity },
-    // });
+
     res.redirect("/cart");
   } catch (err) {
     console.log(err);
@@ -94,13 +83,8 @@ exports.postCart = async (req, res, next) => {
 
 exports.postCartDeleteProduct = async (req, res, next) => {
   const prodId = req.body.productId;
-
   try {
-    const cart = await req.user.getCart();
-    const products = await cart.getProducts({ where: { id: prodId } });
-
-    const product = products[0];
-    await product.cartItem.destroy();
+    await req.user.deleteItemFromCart(prodId);
 
     res.redirect("/cart");
   } catch (err) {
