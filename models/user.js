@@ -110,6 +110,26 @@ class User {
     }
   }
 
+  async addOrder() {
+    const db = getDb();
+
+    try {
+      await db.collection("orders").insertOne(this.cart);
+
+      this.cart = { items: [] };
+      const result = await db
+        .collection("users")
+        .updateOne(
+          { _id: new ObjectId(this._id) },
+          { $set: { cart: { items: [] } } }
+        );
+
+      console.log("数据库更新结果:", result);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   static async findById(userId) {
     const db = getDb();
 
