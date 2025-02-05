@@ -27,10 +27,6 @@ exports.getEditProduct = async (req, res, next) => {
   }
   const prodId = req.params.productId;
   try {
-    // find an item by it's primary key
-    // const product = await Product.findByPk(prodId);
-
-    // find products with user's id with where condition
     const product = await Product.findById(prodId);
 
     if (!product) {
@@ -50,8 +46,13 @@ exports.getEditProduct = async (req, res, next) => {
 exports.postEditProduct = async (req, res, next) => {
   const { prodId, title, imageUrl, price, description } = req.body;
   try {
-    const product = new Product(title, price, description, imageUrl, prodId);
-    product.save();
+    const product = await Product.findById(prodId);
+    // 直接修改字段
+    product.title = title;
+    product.price = price;
+    product.description = description;
+    product.imageUrl = imageUrl;
+    await product.save();
     console.log("PRODUCT UPDATED!");
     res.redirect("/admin/products");
   } catch (err) {
@@ -61,7 +62,7 @@ exports.postEditProduct = async (req, res, next) => {
 
 exports.getProducts = async (req, res, next) => {
   try {
-    const products = await Product.fetchAll();
+    const products = await Product.find();
     res.render("admin/products", {
       prods: products,
       pageTitle: "Admin Products",
