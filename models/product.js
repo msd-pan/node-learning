@@ -9,6 +9,8 @@ const productSchema = new Schema({
   imageUrl: { type: String, required: true },
 });
 
+module.exports = mongoose.model("Product", productSchema);
+
 // const mongodb = require("mongodb");
 
 // class Product {
@@ -77,5 +79,3 @@ const productSchema = new Schema({
 //     }
 //   }
 // }
-
-// module.exports = Product;

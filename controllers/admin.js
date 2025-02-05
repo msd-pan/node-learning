@@ -10,16 +10,9 @@ exports.getAddProduct = (req, res, next) => {
 
 exports.postAddProduct = async (req, res, next) => {
   const { title, imageUrl, price, description } = req.body;
-  const product = new Product(
-    title,
-    price,
-    description,
-    imageUrl,
-    null,
-    req.user._id
-  );
+  const product = new Product({ title, price, description, imageUrl });
   try {
-    await product.save();
+    await product.save(); // this save method is provided by mongoose
     console.log("Created Product");
     res.redirect("/admin/products");
   } catch (err) {
