@@ -47,7 +47,7 @@ exports.getCart = async (req, res, next) => {
   try {
     const user = await req.user.populate("cart.items.productId");
     const cartProducts = user.cart.items;
-    console.log(cartProducts);
+    // console.log(cartProducts);
     res.render("shop/cart", {
       path: "/cart",
       pageTitle: "Your Cart",
@@ -74,7 +74,7 @@ exports.postCart = async (req, res, next) => {
 exports.postCartDeleteProduct = async (req, res, next) => {
   const prodId = req.body.productId;
   try {
-    await req.user.deleteItemFromCart(prodId);
+    await req.user.removeFromCart(prodId);
 
     res.redirect("/cart");
   } catch (err) {
