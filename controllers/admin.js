@@ -69,6 +69,19 @@ exports.postEditProduct = async (req, res, next) => {
 exports.getProducts = async (req, res, next) => {
   try {
     const products = await Product.find();
+
+    // const testProducts = await Product.find().select("title price -_id");
+    // // The .select() method is used to specify which fields to retrieve from the database
+    // // The "-_id" option ensures that the _id field is excluded from the query results (by default, MongoDB always includes _id)
+    // console.log("testProducts", testProducts);
+
+    // const testProducts1 = await Product.find()
+    //   .select("title price -_id") //// Only retrieve title and price, exclude _id
+    //   .populate("userId"); //// Replace `userId` with actual User document
+
+    // console.log("testProducts", testProducts1);
+    // // The .populate() method in Mongoose is used to replace a referenced ObjectId with the actual document from another collection. This is useful when working with MongoDB references (ref), where one document stores the ObjectId of another document instead of embedding the full data.
+
     res.render("admin/products", {
       prods: products,
       pageTitle: "Admin Products",
