@@ -11,7 +11,7 @@ const mongoose = require("mongoose");
 // 引入自定义的错误控制器
 // Import custom error controller
 const errorController = require("./controllers/error");
-// const User = require("./models/user");
+const User = require("./models/user");
 
 // 创建Express应用实例
 // Create an Express application instance
@@ -38,15 +38,15 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // Serve static files from the 'public' directory
 app.use(express.static(path.join(__dirname, "public")));
 
-// app.use(async (req, res, next) => {
-//   try {
-//     const user = await User.findById("679caf1949aab05342e7fe94");
-//     req.user = new User(user.username, user.email, user.cart, user._id);
-//     next();
-//   } catch (err) {
-//     console.log(err);
-//   }
-// });
+app.use(async (req, res, next) => {
+  try {
+    const user = await User.findById("67a2c1b949e95c0991ae2a48");
+    req.user = user;
+    next();
+  } catch (err) {
+    console.log(err);
+  }
+});
 
 // 将以 '/admin' 开头的路由交由 adminRoutes 处理
 // Route requests starting with '/admin' to adminRoutes
@@ -65,6 +65,19 @@ const satrtServer = async () => {
     await mongoose.connect(
       "mongodb+srv://xiaoka:kjnDrVAOaVXZdbQk@cluster0.0bsg4.mongodb.net/shop?retryWrites=true&w=majority&appName=Cluster0"
     );
+
+    const firstUser = await User.findOne();
+    if (!firstUser) {
+      const user = new User({
+        name: "Max",
+        email: "max@test.com",
+        cart: {
+          items: [],
+        },
+      });
+      user.save();
+    }
+
     app.listen(3000);
   } catch (err) {
     console.log(err);
