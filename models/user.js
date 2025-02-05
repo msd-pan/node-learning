@@ -57,6 +57,15 @@ userSchema.methods.removeFromCart = async function (productId) {
   }
 };
 
+userSchema.methods.clearCart = async function () {
+  try {
+    this.cart = { items: [] };
+    await this.save();
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 module.exports = mongoose.model("User", userSchema);
 
 // const mongodb = require("mongodb");

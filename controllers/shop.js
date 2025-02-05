@@ -93,6 +93,7 @@ exports.postOrder = async (req, res, next) => {
       products,
     });
     await order.save();
+    await req.user.clearCart();
     res.redirect("/orders");
   } catch (err) {
     console.log(err);
