@@ -16,22 +16,10 @@ exports.getProducts = async (req, res, next) => {
 
 exports.getProduct = async (req, res, next) => {
   const prodId = req.params.productId;
-  // console.log("Received prodId:", prodId);
-
-  // the retrieving way with 'where' condition
-  // try {
-  //   const products = await Product.findAll({ where: { id: prodId } });
-  //   res.render("shop/product-detail", {
-  //     product: products[0],
-  //     pageTitle: products[0].title,
-  //     path: "/products",
-  //   });
-  // } catch (err) {
-  //   console.log(err);
-  // }
 
   try {
     const product = await Product.findById(prodId);
+    // method findById is also provided by mongoose
     res.render("shop/product-detail", {
       product: product,
       pageTitle: product.title,
