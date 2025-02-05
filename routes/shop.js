@@ -8,7 +8,7 @@ const router = express.Router();
 
 router.get("/", shopController.getIndex);
 
-// router.get("/products", shopController.getProducts);
+router.get("/products", shopController.getProducts);
 
 // router.get("/products/:productId", shopController.getProduct);
 // 动态路由，匹配 /products/ 后接任何动态参数的路径, 其必须是放在最后，不然之前的任意/products/都不会达到
