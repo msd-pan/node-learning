@@ -1,3 +1,6 @@
+const bcrypt = require("bcryptjs");
+// It provides a way to encrypt passwords before storing them in a database, ensuring that even if the database is compromised, attackers cannot easily retrieve the original passwords
+
 const User = require("../models/user");
 
 exports.getLogin = async (req, res, next) => {
@@ -46,7 +49,12 @@ exports.postSignup = async (req, res, next) => {
       return res.redirect("/signup");
     }
 
-    const user = new User({ email, password, cart: { items: [] } });
+    const hashedPassword = await bcrypt.hash(password, 12);
+    const user = new User({
+      email,
+      password: hashedPassword,
+      cart: { items: [] },
+    });
     await user.save();
     res.redirect("/login");
   } catch (err) {
