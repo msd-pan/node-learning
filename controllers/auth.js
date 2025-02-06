@@ -13,6 +13,18 @@ exports.getLogin = async (req, res, next) => {
   }
 };
 
+exports.getSignup = async (req, res, next) => {
+  try {
+    res.render("auth/signup", {
+      path: "/signup",
+      pageTitle: "Signup",
+      isAuthenticated: false,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 exports.postLogin = async (req, res, next) => {
   try {
     req.session.isLoggedIn = true;
@@ -25,6 +37,8 @@ exports.postLogin = async (req, res, next) => {
     console.log(err);
   }
 };
+
+exports.postSignup = async (req, res, next) => {};
 
 exports.postLogout = async (req, res, next) => {
   try {
