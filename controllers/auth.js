@@ -1,6 +1,6 @@
 exports.getLogin = async (req, res, next) => {
   try {
-    // const isLoggedIn = req.get("Cookie").split(";")[1].trim().split("=")[1];
+    console.log(req.session.isLoggedIn);
     res.render("auth/login", {
       pageTitle: "Login",
       path: "/login",
@@ -13,7 +13,7 @@ exports.getLogin = async (req, res, next) => {
 
 exports.postLogin = async (req, res, next) => {
   try {
-    res.setHeader("Set-Cookie", "loggedIn=true; HttpOnly");
+    req.session.isLoggedIn = true;
     res.redirect("/");
   } catch (err) {
     console.log(err);
