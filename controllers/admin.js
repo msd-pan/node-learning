@@ -16,7 +16,7 @@ exports.postAddProduct = async (req, res, next) => {
     price,
     description,
     imageUrl,
-    userId: req.session.user, // this will only pass the user id,not the entire user
+    userId: req.user, // this will only pass the user id,not the entire user
   });
   try {
     await product.save(); // this save method is provided by mongoose
