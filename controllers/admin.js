@@ -1,9 +1,6 @@
 const Product = require("../models/product");
 
 exports.getAddProduct = (req, res, next) => {
-  if (!req.session.isLoggedIn) {
-    return res.redirect("/login");
-  }
   res.render("admin/edit-product", {
     pageTitle: "Add Product",
     path: "/admin/add-product",
@@ -33,7 +30,7 @@ exports.postAddProduct = async (req, res, next) => {
 exports.getEditProduct = async (req, res, next) => {
   const editMode = req.query.edit;
   if (!editMode) {
-    res.redirect("/");
+    return res.redirect("/");
   }
   const prodId = req.params.productId;
   try {
@@ -55,9 +52,9 @@ exports.getEditProduct = async (req, res, next) => {
 };
 
 exports.postEditProduct = async (req, res, next) => {
-  const { prodId, title, imageUrl, price, description } = req.body;
+  const { productId, title, imageUrl, price, description } = req.body;
   try {
-    const product = await Product.findById(prodId);
+    const product = await Product.findById(productId);
     // 直接修改字段
     product.title = title;
     product.price = price;
@@ -99,7 +96,7 @@ exports.getProducts = async (req, res, next) => {
 };
 
 exports.postDeleteProduct = async (req, res, next) => {
-  const prodId = req.body.prodId;
+  const prodId = req.body.productId;
   try {
     await Product.findByIdAndDelete(prodId);
     console.log("PRODUCT DELETED!");
