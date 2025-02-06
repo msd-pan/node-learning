@@ -9,6 +9,7 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const session = require("express-session");
 const MongoDBStore = require("connect-mongodb-session")(session);
+const csrf = require("csurf");
 
 // 引入自定义的错误控制器
 // Import custom error controller
@@ -23,6 +24,8 @@ const MONGODB_URI =
 const app = express();
 
 const store = new MongoDBStore({ uri: MONGODB_URI, collection: "sessions" });
+
+const csrfProtection = csrf();
 
 // 设置模板引擎为 EJS
 // Set the view engine to EJS
@@ -55,6 +58,8 @@ app.use(
     store,
   })
 );
+
+app.use(csrfProtection);
 
 app.use(async (req, res, next) => {
   try {
