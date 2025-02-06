@@ -73,6 +73,14 @@ app.use(async (req, res, next) => {
   }
 });
 
+app.use((req, res, next) => {
+  res.locals.isAuthenticated = req.session.isLoggedIn;
+  res.locals.csrfToken = req.csrfToken();
+  next();
+});
+// It runs on every request before hitting your route handlers.
+// It adds isAuthenticated and csrfToken to res.locals, making them available in all views automatically
+
 // 将以 '/admin' 开头的路由交由 adminRoutes 处理
 // Route requests starting with '/admin' to adminRoutes
 app.use("/admin", adminRoutes);
