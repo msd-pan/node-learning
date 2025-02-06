@@ -7,6 +7,7 @@ const path = require("path");
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
+const session = require("express-session");
 
 // 引入自定义的错误控制器
 // Import custom error controller
@@ -38,6 +39,11 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // 设置静态文件目录为 'public'
 // Serve static files from the 'public' directory
 app.use(express.static(path.join(__dirname, "public")));
+
+// use session
+app.use(
+  session({ secret: "my secret", resave: false, saveUninitialized: false })
+);
 
 app.use(async (req, res, next) => {
   try {
