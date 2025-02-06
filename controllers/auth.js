@@ -17,7 +17,10 @@ exports.postLogin = async (req, res, next) => {
   try {
     req.session.isLoggedIn = true;
     req.session.user = await User.findById("67a2c1b949e95c0991ae2a48");
-    res.redirect("/");
+    await req.session.save((err) => {
+      console.log(err);
+      res.redirect("/");
+    });
   } catch (err) {
     console.log(err);
   }
