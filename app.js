@@ -56,16 +56,6 @@ app.use(
   })
 );
 
-app.use(async (req, res, next) => {
-  try {
-    const user = await User.findById("67a2c1b949e95c0991ae2a48");
-    req.user = user;
-    next();
-  } catch (err) {
-    console.log(err);
-  }
-});
-
 // 将以 '/admin' 开头的路由交由 adminRoutes 处理
 // Route requests starting with '/admin' to adminRoutes
 app.use("/admin", adminRoutes);
