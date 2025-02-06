@@ -8,15 +8,21 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const session = require("express-session");
+const MongoDBStore = require("connect-mongodb-session")(session);
 
 // 引入自定义的错误控制器
 // Import custom error controller
 const errorController = require("./controllers/error");
 const User = require("./models/user");
 
+const MONGODB_URI =
+  "mongodb+srv://xiaoka:kjnDrVAOaVXZdbQk@cluster0.0bsg4.mongodb.net/shop?retryWrites=true&w=majority&appName=Cluster0";
+
 // 创建Express应用实例
 // Create an Express application instance
 const app = express();
+
+const store = new MongoDBStore({ uri: MONGODB_URI, collection: "sessions" });
 
 // 设置模板引擎为 EJS
 // Set the view engine to EJS
@@ -42,7 +48,12 @@ app.use(express.static(path.join(__dirname, "public")));
 
 // use session
 app.use(
-  session({ secret: "my secret", resave: false, saveUninitialized: false })
+  session({
+    secret: "my secret",
+    resave: false,
+    saveUninitialized: false,
+    store,
+  })
 );
 
 app.use(async (req, res, next) => {
@@ -70,9 +81,7 @@ app.use(errorController.get404);
 
 const satrtServer = async () => {
   try {
-    await mongoose.connect(
-      "mongodb+srv://xiaoka:kjnDrVAOaVXZdbQk@cluster0.0bsg4.mongodb.net/shop?retryWrites=true&w=majority&appName=Cluster0"
-    );
+    await mongoose.connect(MONGODB_URI);
 
     const firstUser = await User.findOne();
     if (!firstUser) {
