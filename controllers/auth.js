@@ -30,12 +30,23 @@ exports.getSignup = async (req, res, next) => {
 
 exports.postLogin = async (req, res, next) => {
   try {
-    req.session.isLoggedIn = true;
-    req.session.user = await User.findById("67a2c1b949e95c0991ae2a48");
-    await req.session.save((err) => {
-      console.log(err);
-      res.redirect("/");
-    });
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.redirect("/login");
+    }
+    const doMatch = await bcrypt.compare(password, user.password);
+
+    if (doMatch) {
+      req.session.isLoggedIn = true;
+      req.session.user = user;
+      return req.session.save((err) => {
+        if (err) console.log("Session save error:", err);
+        res.redirect("/");
+      });
+    }
+    res.redirect("/login");
   } catch (err) {
     console.log(err);
   }
