@@ -85,18 +85,6 @@ const satrtServer = async () => {
   try {
     await mongoose.connect(MONGODB_URI);
 
-    const firstUser = await User.findOne();
-    if (!firstUser) {
-      const user = new User({
-        name: "Max",
-        email: "max@test.com",
-        cart: {
-          items: [],
-        },
-      });
-      user.save();
-    }
-
     app.listen(3000);
   } catch (err) {
     console.log(err);

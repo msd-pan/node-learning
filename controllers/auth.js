@@ -38,7 +38,21 @@ exports.postLogin = async (req, res, next) => {
   }
 };
 
-exports.postSignup = async (req, res, next) => {};
+exports.postSignup = async (req, res, next) => {
+  try {
+    const { email, password, confirmPassword } = req.body;
+    const userDoc = await User.findOne({ email });
+    if (userDoc) {
+      return res.redirect("/signup");
+    }
+
+    const user = new User({ email, password, cart: { items: [] } });
+    await user.save();
+    res.redirect("/login");
+  } catch (err) {
+    console.log(err);
+  }
+};
 
 exports.postLogout = async (req, res, next) => {
   try {
