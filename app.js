@@ -10,6 +10,7 @@ const mongoose = require("mongoose");
 const session = require("express-session");
 const MongoDBStore = require("connect-mongodb-session")(session);
 const csrf = require("csurf");
+const flash = require("connect-flash");
 
 // 引入自定义的错误控制器
 // Import custom error controller
@@ -60,6 +61,8 @@ app.use(
 );
 
 app.use(csrfProtection);
+
+app.use(flash());
 
 app.use(async (req, res, next) => {
   try {
