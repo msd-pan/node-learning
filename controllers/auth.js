@@ -1,6 +1,33 @@
 const bcrypt = require("bcryptjs");
 // It provides a way to encrypt passwords before storing them in a database, ensuring that even if the database is compromised, attackers cannot easily retrieve the original passwords
 
+const nodemailer = require("nodemailer");
+// Require:
+const postmark = require("postmark");
+// Send an email:
+const client = new postmark.Client("d594640e-45a8-4111-98ad-4124c0ab8167");
+
+const getMessage = (email) => {
+  const body = "You successfully signed up at xiaoka's application";
+  return {
+    From: "jixiao.pan@msdcorp.co.jp",
+    To: email,
+    Subject: "Signup succeeded!",
+    TextBody: body,
+    HtmlBody: `${body}`,
+  };
+};
+
+const sendEmail = async (email) => {
+  try {
+    await client.sendEmail(getMessage(email));
+    console.log("Test email sent successfully");
+  } catch (error) {
+    console.error("Error sending test email");
+    console.error(error);
+  }
+};
+
 const User = require("../models/user");
 
 exports.getLogin = async (req, res, next) => {
@@ -81,6 +108,7 @@ exports.postSignup = async (req, res, next) => {
       password: hashedPassword,
       cart: { items: [] },
     });
+    await sendEmail(email);
     await user.save();
     res.redirect("/login");
   } catch (err) {
