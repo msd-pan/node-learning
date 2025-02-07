@@ -89,7 +89,7 @@ exports.postOrder = async (req, res, next) => {
       return { quantity: i.quantity, product: { ...i.productId._doc } };
     });
     const order = new Order({
-      user: { name: req.user.name, userId: req.user },
+      user: { email: req.user.email, userId: req.user },
       products,
     });
     await order.save();
