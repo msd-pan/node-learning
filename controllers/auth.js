@@ -23,10 +23,17 @@ exports.getLogin = async (req, res, next) => {
 
 exports.getSignup = async (req, res, next) => {
   try {
+    let message = req.flash("error");
+    if (message.length > 0) {
+      message = message[0];
+    } else {
+      message = null;
+    }
     res.render("auth/signup", {
       path: "/signup",
       pageTitle: "Signup",
       isAuthenticated: false,
+      errorMessage: message,
     });
   } catch (err) {
     console.log(err);
@@ -52,6 +59,7 @@ exports.postLogin = async (req, res, next) => {
         res.redirect("/");
       });
     }
+    req.flash("error", "Invalid email or password! ");
     res.redirect("/login");
   } catch (err) {
     console.log(err);
@@ -63,6 +71,7 @@ exports.postSignup = async (req, res, next) => {
     const { email, password, confirmPassword } = req.body;
     const userDoc = await User.findOne({ email });
     if (userDoc) {
+      req.flash("error", "E-mail exists already,pls pick a different one");
       return res.redirect("/signup");
     }
 
