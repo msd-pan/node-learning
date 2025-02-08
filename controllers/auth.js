@@ -99,7 +99,7 @@ exports.postLogin = async (req, res, next) => {
 
 exports.postSignup = async (req, res, next) => {
   try {
-    const { email, password, confirmPassword } = req.body;
+    const { email, password } = req.body;
 
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
