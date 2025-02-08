@@ -194,7 +194,30 @@ exports.getNewPassword = async (req, res, next) => {
       path: "/new-password",
       errorMessage: message,
       userId: user._id.toString(),
+      passwordToken: token,
     });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+exports.postNewPassword = async (req, res, next) => {
+  try {
+    const { userId, passwordToken } = req.body;
+    const newPassword = req.body.password;
+
+    const user = await User.findOne({
+      resetToken: passwordToken,
+      resetTokenExpiration: { $gt: Date.now() },
+      _id: userId,
+    });
+
+    const hashedPassword = await bcrypt.hash(newPassword, 12);
+    user.password = hashedPassword;
+    user.resetToken = null;
+    user.resetTokenExpiration = undefined;
+    await user.save();
+    res.redirect("/login");
   } catch (err) {
     console.log(err);
   }
