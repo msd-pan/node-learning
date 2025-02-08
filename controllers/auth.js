@@ -6,6 +6,8 @@ const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
 // Require:
 const postmark = require("postmark");
+
+const { validationResult } = require("express-validator");
 // Send an email:
 const client = new postmark.Client("d594640e-45a8-4111-98ad-4124c0ab8167");
 
@@ -98,6 +100,18 @@ exports.postLogin = async (req, res, next) => {
 exports.postSignup = async (req, res, next) => {
   try {
     const { email, password, confirmPassword } = req.body;
+
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      console.log(errors.array());
+      return res.status(422).render("auth/signup", {
+        path: "/signup",
+        pageTitle: "Signup",
+        isAuthenticated: false,
+        errorMessage: errors.array(),
+      });
+    }
+
     const userDoc = await User.findOne({ email });
     if (userDoc) {
       req.flash("error", "E-mail exists already,pls pick a different one");
