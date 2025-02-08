@@ -1,3 +1,5 @@
+const crypto = require("crypto");
+
 const bcrypt = require("bcryptjs");
 // It provides a way to encrypt passwords before storing them in a database, ensuring that even if the database is compromised, attackers cannot easily retrieve the original passwords
 
@@ -7,12 +9,11 @@ const postmark = require("postmark");
 // Send an email:
 const client = new postmark.Client("d594640e-45a8-4111-98ad-4124c0ab8167");
 
-const getMessage = (email) => {
-  const body = "You successfully signed up at xiaoka's application";
+const getMessage = (email, subject, body) => {
   return {
     From: "jixiao.pan@msdcorp.co.jp",
     To: email,
-    Subject: "Signup succeeded!",
+    Subject: subject,
     TextBody: body,
     HtmlBody: `${body}`,
   };
@@ -29,6 +30,7 @@ const sendEmail = async (email) => {
 };
 
 const User = require("../models/user");
+const { buffer } = require("stream/consumers");
 
 exports.getLogin = async (req, res, next) => {
   try {
@@ -108,7 +110,11 @@ exports.postSignup = async (req, res, next) => {
       password: hashedPassword,
       cart: { items: [] },
     });
-    await sendEmail(email);
+    await sendEmail(
+      email,
+      "Signup succeeded!",
+      "You successfully signed up at xiaoka's application"
+    );
     await user.save();
     res.redirect("/login");
   } catch (err) {
@@ -138,4 +144,31 @@ exports.getReset = (req, res, next) => {
     path: "/reset",
     errorMessage: message,
   });
+};
+
+exports.postReset = async (req, res, next) => {
+  try {
+    const token = crypto.randomBytes(32).toString("hex");
+
+    const user = await User.findOne({ email: req.user.email });
+
+    if (!user) {
+      req.flash("error", "No account with that email found.");
+      return res.redirect("/reset");
+    }
+
+    user.resetToken = token;
+    user.resetTokenExpiration = Date.now() + 3600000; // 1-hour expiration
+    await user.save();
+
+    const body = `
+    <p>You requested a password reset</p>
+    <p>Click this <a href="http://localhost:3000/reset/${token}">link</a> to set a new password
+    `;
+    await sendEmail(req.user.email, "Password Reset!", body);
+
+    res.redirect("/");
+  } catch (err) {
+    console.log(err);
+  }
 };
