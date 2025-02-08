@@ -53,6 +53,10 @@ exports.postEditProduct = async (req, res, next) => {
   const { productId, title, imageUrl, price, description } = req.body;
   try {
     const product = await Product.findById(productId);
+
+    if (product.userId !== req.user._id) {
+      return res.redirect("/");
+    }
     // 直接修改字段
     product.title = title;
     product.price = price;
@@ -95,7 +99,7 @@ exports.getProducts = async (req, res, next) => {
 exports.postDeleteProduct = async (req, res, next) => {
   const prodId = req.body.productId;
   try {
-    await Product.findByIdAndDelete(prodId);
+    await Product.deleteOne({ id: prodId, userId: req.user._id });
     console.log("PRODUCT DELETED!");
     res.redirect("/admin/products");
   } catch (err) {
