@@ -19,9 +19,9 @@ const getMessage = (email, subject, body) => {
   };
 };
 
-const sendEmail = async (email) => {
+const sendEmail = async (email, subject, body) => {
   try {
-    await client.sendEmail(getMessage(email));
+    await client.sendEmail(getMessage(email, subject, body));
     console.log("Test email sent successfully");
   } catch (error) {
     console.error("Error sending test email");
@@ -150,7 +150,7 @@ exports.postReset = async (req, res, next) => {
   try {
     const token = crypto.randomBytes(32).toString("hex");
 
-    const user = await User.findOne({ email: req.user.email });
+    const user = await User.findOne({ email: req.body.email });
 
     if (!user) {
       req.flash("error", "No account with that email found.");
@@ -165,7 +165,7 @@ exports.postReset = async (req, res, next) => {
     <p>You requested a password reset</p>
     <p>Click this <a href="http://localhost:3000/reset/${token}">link</a> to set a new password
     `;
-    await sendEmail(req.user.email, "Password Reset!", body);
+    await sendEmail(req.body.email, "Password Reset!", body);
 
     res.redirect("/");
   } catch (err) {
