@@ -54,7 +54,7 @@ exports.postEditProduct = async (req, res, next) => {
   try {
     const product = await Product.findById(productId);
 
-    if (product.userId !== req.user._id) {
+    if (product.userId.toString() !== req.user._id.toString()) {
       return res.redirect("/");
     }
     // 直接修改字段
