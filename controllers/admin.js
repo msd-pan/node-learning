@@ -68,7 +68,7 @@ exports.postEditProduct = async (req, res, next) => {
 
 exports.getProducts = async (req, res, next) => {
   try {
-    const products = await Product.find();
+    const products = await Product.find({ userId: req.user._id });
 
     // const testProducts = await Product.find().select("title price -_id");
     // // The .select() method is used to specify which fields to retrieve from the database
