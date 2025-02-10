@@ -70,6 +70,7 @@ exports.getSignup = async (req, res, next) => {
         password: "",
         confirmPassword: "",
       },
+      validationErrors: [],
     });
   } catch (err) {
     console.log(err);
@@ -128,6 +129,7 @@ exports.postSignup = async (req, res, next) => {
           password,
           confirmPassword: req.body.confirmPassword,
         },
+        validationErrors: errors.array(),
       });
     }
 
