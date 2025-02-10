@@ -98,6 +98,8 @@ app.use("/admin", adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
 
+app.get("/500", errorController.get500);
+
 // 使用错误控制器处理 404 错误（未找到页面）
 // Use the error controller to handle 404 errors (Page Not Found)
 app.use(errorController.get404);
