@@ -46,6 +46,11 @@ exports.getLogin = async (req, res, next) => {
       pageTitle: "Login",
       path: "/login",
       errorMessage: message,
+      oldInput: {
+        email: "",
+        password: "",
+      },
+      validationErrors: [],
     });
   } catch (err) {
     console.log(err);
@@ -88,12 +93,25 @@ exports.postLogin = async (req, res, next) => {
         path: "/login",
         pageTitle: "Login",
         errorMessage: errors.array()[0].msg,
+        oldInput: {
+          email,
+          password,
+        },
+        validationErrors: errors.array(),
       });
     }
 
     if (!user) {
-      req.flash("error", "Invalid email or password! ");
-      return res.redirect("/login");
+      return res.status(422).render("auth/login", {
+        path: "/login",
+        pageTitle: "Login",
+        errorMessage: "Invalid email or password! ",
+        oldInput: {
+          email,
+          password,
+        },
+        validationErrors: [],
+      });
     }
     const doMatch = await bcrypt.compare(password, user.password);
 
@@ -106,7 +124,16 @@ exports.postLogin = async (req, res, next) => {
       });
     }
     req.flash("error", "Invalid email or password! ");
-    res.redirect("/login");
+    return res.status(422).render("auth/login", {
+      path: "/login",
+      pageTitle: "Login",
+      errorMessage: "Invalid email or password! ",
+      oldInput: {
+        email,
+        password,
+      },
+      validationErrors: [],
+    });
   } catch (err) {
     console.log(err);
   }
