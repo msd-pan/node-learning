@@ -56,7 +56,11 @@ exports.postAddProduct = async (req, res, next) => {
     //   errorMessage: "Database operation failed, pls try again~",
     //   validationErrors: errors.array(),
     // });
-    res.redirect("/500");
+
+    // res.redirect("/500");
+    const error = new Error(err);
+    error.httpStatusCode = 500;
+    return next(error);
   }
 };
 
@@ -72,6 +76,7 @@ exports.getEditProduct = async (req, res, next) => {
     if (!product) {
       return res.redirect("/");
     }
+    // throw new Error();
     res.render("admin/edit-product", {
       pageTitle: "Edit Product",
       path: "/admin/edit-product",
@@ -82,7 +87,9 @@ exports.getEditProduct = async (req, res, next) => {
       validationErrors: [],
     });
   } catch (err) {
-    console.log(err);
+    const error = new Error(err);
+    error.httpStatusCode = 500;
+    return next(error);
   }
 };
 
