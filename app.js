@@ -64,28 +64,31 @@ app.use(csrfProtection);
 
 app.use(flash());
 
+app.use((req, res, next) => {
+  res.locals.isAuthenticated = req.session.isLoggedIn;
+  res.locals.csrfToken = req.csrfToken();
+  next();
+});
+
 app.use(async (req, res, next) => {
+  // throw new Error("sync dummy");
   try {
     if (!req.session.user) {
       return next();
     }
-    const user = await User.findById(req.session.user._id);
 
+    const user = await User.findById(req.session.user._id);
+    throw new Error("dummy");
     if (!user) {
       return next();
     }
     req.user = user;
     next();
   } catch (err) {
-    throw new Error(err);
+    next(err);
   }
 });
 
-app.use((req, res, next) => {
-  res.locals.isAuthenticated = req.session.isLoggedIn;
-  res.locals.csrfToken = req.csrfToken();
-  next();
-});
 // It runs on every request before hitting your route handlers.
 // It adds isAuthenticated and csrfToken to res.locals, making them available in all views automatically
 
@@ -106,7 +109,12 @@ app.use(errorController.get404);
 
 app.use((error, req, res, next) => {
   // res.status(error.httpStatusCode).render(...);
-  res.redirect("/500");
+  // res.redirect("/500");
+  res.status(500).render("500", {
+    pageTitle: "Page Not Found",
+    path: "/500",
+    isAuthenticated: req.session.isLoggedIn,
+  });
 });
 
 const satrtServer = async () => {
