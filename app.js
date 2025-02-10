@@ -71,14 +71,13 @@ app.use((req, res, next) => {
 });
 
 app.use(async (req, res, next) => {
-  // throw new Error("sync dummy");
   try {
     if (!req.session.user) {
       return next();
     }
 
     const user = await User.findById(req.session.user._id);
-    throw new Error("dummy");
+    // throw new Error("dummy");
     if (!user) {
       return next();
     }
