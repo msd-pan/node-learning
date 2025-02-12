@@ -31,6 +31,7 @@
     "mysql2": "^3.12.0",
     "node-learning": "file:",
     "nodemailer": "^6.10.0",
+    "pdfkit": "^0.16.0",
     "postmark": "^4.0.5",
     "pug": "^3.0.3",
     "sequelize": "^6.37.5"
