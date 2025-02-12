@@ -85,6 +85,7 @@ app.use(
 // 设置静态文件目录为 'public'
 // Serve static files from the 'public' directory
 app.use(express.static(path.join(__dirname, "public")));
+app.use("/images", express.static(path.join(__dirname, "images")));
 
 // use session
 app.use(
