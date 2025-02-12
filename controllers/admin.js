@@ -16,7 +16,9 @@ exports.getAddProduct = (req, res, next) => {
 };
 
 exports.postAddProduct = async (req, res, next) => {
-  const { title, image, price, description } = req.body;
+  const { title, price, description } = req.body;
+  const imageUrl = req.file;
+  console.log(imageUrl);
 
   const errors = validationResult(req);
 
@@ -28,7 +30,7 @@ exports.postAddProduct = async (req, res, next) => {
       path: "/admin/add-product",
       editing: false,
       hasError: true,
-      product: { title, image, price, description },
+      product: { title, imageUrl, price, description },
       errorMessage: errors.array()[0].msg,
       validationErrors: errors.array(),
     });
@@ -39,7 +41,7 @@ exports.postAddProduct = async (req, res, next) => {
     title,
     price,
     description,
-    image,
+    imageUrl,
     userId: req.user, // this will only pass the user id,not the entire user
   });
   try {

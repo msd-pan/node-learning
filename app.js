@@ -11,6 +11,7 @@ const session = require("express-session");
 const MongoDBStore = require("connect-mongodb-session")(session);
 const csrf = require("csurf");
 const flash = require("connect-flash");
+const multer = require("multer");
 
 // 引入自定义的错误控制器
 // Import custom error controller
@@ -45,6 +46,8 @@ const authRoutes = require("./routes/auth");
 // 使用 body-parser 解析表单数据
 // Use body-parser to parse incoming form data
 app.use(bodyParser.urlencoded({ extended: false }));
+
+app.use(multer({ dest: "images" }).single("image"));
 
 // 设置静态文件目录为 'public'
 // Serve static files from the 'public' directory
