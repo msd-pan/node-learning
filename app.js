@@ -29,6 +29,19 @@ const store = new MongoDBStore({ uri: MONGODB_URI, collection: "sessions" });
 
 const csrfProtection = csrf();
 
+const fileStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "images");
+  },
+  filename: (req, file, cb) => {
+    cb(
+      null,
+      new Date().toISOString().replace(/:/g, "-") + "-" + file.originalname
+    );
+    // new Date().toISOString() contains : (colons), which are not allowed in filenames on Windows.
+  },
+});
+
 // 设置模板引擎为 EJS
 // Set the view engine to EJS
 app.set("view engine", "ejs");
@@ -47,7 +60,7 @@ const authRoutes = require("./routes/auth");
 // Use body-parser to parse incoming form data
 app.use(bodyParser.urlencoded({ extended: false }));
 
-app.use(multer({ dest: "images" }).single("image"));
+app.use(multer({ storage: fileStorage }).single("image"));
 
 // 设置静态文件目录为 'public'
 // Serve static files from the 'public' directory
