@@ -42,6 +42,18 @@ const fileStorage = multer.diskStorage({
   },
 });
 
+const fileFilter = (req, file, cb) => {
+  if (
+    file.mimetype === "image/png" ||
+    file.mimetype === "image/jpg" ||
+    file.mimetype === "image/jpeg"
+  ) {
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+};
+
 // 设置模板引擎为 EJS
 // Set the view engine to EJS
 app.set("view engine", "ejs");
@@ -60,7 +72,9 @@ const authRoutes = require("./routes/auth");
 // Use body-parser to parse incoming form data
 app.use(bodyParser.urlencoded({ extended: false }));
 
-app.use(multer({ storage: fileStorage }).single("image"));
+app.use(
+  multer({ storage: fileStorage, fileFilter: fileFilter }).single("image")
+);
 
 // 设置静态文件目录为 'public'
 // Serve static files from the 'public' directory
