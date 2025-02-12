@@ -34,10 +34,16 @@ const fileStorage = multer.diskStorage({
     cb(null, "images");
   },
   filename: (req, file, cb) => {
-    cb(
-      null,
-      new Date().toISOString().replace(/:/g, "-") + "-" + file.originalname
+    // ✅ Convert filename to UTF-8 safe format
+    const safeFilename = Buffer.from(file.originalname, "latin1").toString(
+      "utf8"
     );
+
+    // ✅ Ensure filename is safe for Windows & remove problematic characters
+    const timestamp = new Date().toISOString().replace(/:/g, "-");
+    const cleanedFilename = safeFilename.replace(/[\s]/g, "_"); // Replace spaces for safety
+
+    cb(null, `${timestamp}-${cleanedFilename}`);
     // new Date().toISOString() contains : (colons), which are not allowed in filenames on Windows.
   },
 });

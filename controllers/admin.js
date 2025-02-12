@@ -17,8 +17,19 @@ exports.getAddProduct = (req, res, next) => {
 
 exports.postAddProduct = async (req, res, next) => {
   const { title, price, description } = req.body;
-  const imageUrl = req.file;
-  console.log(imageUrl);
+  const image = req.file;
+
+  if (!image) {
+    return res.status(422).render("admin/edit-product", {
+      pageTitle: "Add Product",
+      path: "/admin/add-product",
+      editing: false,
+      hasError: true,
+      product: { title, price, description },
+      errorMessage: "Attached file is not an image.",
+      validationErrors: [],
+    });
+  }
 
   const errors = validationResult(req);
 
@@ -30,18 +41,20 @@ exports.postAddProduct = async (req, res, next) => {
       path: "/admin/add-product",
       editing: false,
       hasError: true,
-      product: { title, imageUrl, price, description },
+      product: { title, price, description },
       errorMessage: errors.array()[0].msg,
       validationErrors: errors.array(),
     });
   }
 
+  const imageUrl = image.path;
+
   const product = new Product({
     // _id: new mongoose.Types.ObjectId("67a96ddfc27e2af6340636e2"),
     title,
     price,
-    description,
     imageUrl,
+    description,
     userId: req.user, // this will only pass the user id,not the entire user
   });
   try {
@@ -96,7 +109,8 @@ exports.getEditProduct = async (req, res, next) => {
 };
 
 exports.postEditProduct = async (req, res, next) => {
-  const { productId, title, imageUrl, price, description } = req.body;
+  const { productId, title, price, description } = req.body;
+  const image = req.file;
   try {
     const errors = validationResult(req);
 
@@ -107,7 +121,7 @@ exports.postEditProduct = async (req, res, next) => {
         path: "/admin/edit-product",
         editing: true,
         hasError: true,
-        product: { title, imageUrl, price, description, _id: productId },
+        product: { title, price, description, _id: productId },
         errorMessage: errors.array()[0].msg,
         validationErrors: errors.array(),
       });
@@ -122,7 +136,9 @@ exports.postEditProduct = async (req, res, next) => {
     product.title = title;
     product.price = price;
     product.description = description;
-    product.imageUrl = imageUrl;
+
+    if (image) product.imageUrl = image.path;
+
     await product.save();
     console.log("PRODUCT UPDATED!");
     res.redirect("/admin/products");
