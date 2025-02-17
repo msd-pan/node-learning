@@ -1,5 +1,8 @@
 const fs = require("fs");
 const path = require("path");
+const stripe = require("stripe")(
+  "sk_test_51QtLvKP86VCtIigP1F9hn3axKj8QNztss0731ePGdeeKPiSs8GlX5cJauKiMwI17f9VJxgaw4iYvZl3G3A9X2Z4T00r2lvq40q"
+);
 
 const PDFDocument = require("pdfkit");
 
@@ -109,12 +112,48 @@ exports.getCheckout = async (req, res, next) => {
       total += p.quantity * p.productId.price;
     });
 
+    const session = stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      line_items: products.map((p) => {
+        return {
+          name: p.productId.title,
+          description: p.product.description,
+          amount: p.productId.price * 100,
+          currency: "usd",
+          quantity: p.quantity,
+        };
+      }),
+      success_url: req.protocol + "://" + req.get("host") + "/checkout/success",
+      calcel_url: req.protocol + "://" + req.get("host") + "/checkout/calcel",
+    });
+
     res.render("shop/checkout", {
       path: "/checkout",
       pageTitle: "Checkout",
       products: products,
       totalSum: total,
+      sessionId: session.id,
     });
+  } catch (err) {
+    const error = new Error(err);
+    error.httpStatusCode = 500;
+    return next(error);
+  }
+};
+
+exports.getCheckoutSuccess = async (req, res, next) => {
+  try {
+    const user = await req.user.populate("cart.items.productId");
+    const products = user.cart.items.map((i) => {
+      return { quantity: i.quantity, product: { ...i.productId._doc } };
+    });
+    const order = new Order({
+      user: { email: req.user.email, userId: req.user },
+      products,
+    });
+    await order.save();
+    await req.user.clearCart();
+    res.redirect("/orders");
   } catch (err) {
     const error = new Error(err);
     error.httpStatusCode = 500;
