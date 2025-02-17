@@ -44,13 +44,23 @@ exports.getProduct = async (req, res, next) => {
 exports.getIndex = async (req, res, next) => {
   try {
     const page = req.query.page;
+
+    const totalItems = Product.find().countDocuments();
+
     const products = await Product.find()
       .skip((page - 1) * ITEM_PER_PAGE)
       .limit(ITEM_PER_PAGE);
+
     res.render("shop/index", {
       prods: products,
       pageTitle: "Shop",
       path: "/",
+      totalProducts: totalItems,
+      hasNextPage: ITEM_PER_PAGE * page < totalItems,
+      hasPreviousPage: page > 1,
+      nextPage: page + 1,
+      previousPage: page - 1,
+      lastPage: Math.ceil(totalItems / ITEM_PER_PAGE),
     });
   } catch (err) {
     const error = new Error(err);
