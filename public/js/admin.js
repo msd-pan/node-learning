@@ -2,11 +2,21 @@ const deleteProduct = async (btn) => {
   const prodId = btn.parentNode.querySelector("[name=productId]").value;
   const csrf = btn.parentNode.querySelector("[name=_csrf]").value;
 
+  const productElement = btn.closest("article");
+
   try {
-    await fetch("/admin/product/" + prodId, {
+    const result = await fetch("/admin/product/" + prodId, {
       method: "DELETE",
       headers: { "csrf-token": csrf },
     });
+    const data = await result.json();
+    console.log(data);
+
+    // morden brwoser
+    // productElement.remove();
+
+    // any browser
+    productElement.parentNode.removeChild(productElement);
   } catch (err) {
     console.log(err);
   }
