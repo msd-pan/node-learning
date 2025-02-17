@@ -10,11 +10,24 @@ const ITEM_PER_PAGE = 1;
 
 exports.getProducts = async (req, res, next) => {
   try {
-    const products = await Product.find();
+    const page = +req.query.page || 1;
+
+    const totalItems = await Product.find().countDocuments();
+
+    const products = await Product.find()
+      .skip((page - 1) * ITEM_PER_PAGE)
+      .limit(ITEM_PER_PAGE);
+
     res.render("shop/product-list", {
       prods: products,
       pageTitle: "All products",
       path: "/products",
+      currentPage: page,
+      hasNextPage: ITEM_PER_PAGE * page < totalItems,
+      hasPreviousPage: page > 1,
+      nextPage: page + 1,
+      previousPage: page - 1,
+      lastPage: Math.ceil(totalItems / ITEM_PER_PAGE),
     });
   } catch (err) {
     const error = new Error(err);
