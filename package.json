@@ -1,0 +1,35 @@
+{
+  "name": "restful-api",
+  "version": "1.0.0",
+  "description": "a project of xiaoka leanring restful api",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "start": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/msd-pan/restful-api.git"
+  },
+  "keywords": [
+    "\"restful\"",
+    "\"api\"",
+    "\"nodejs\"",
+    "\"express\"",
+    "\"backend\"",
+    "\"server\"]"
+  ],
+  "author": "xiaoka",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/msd-pan/restful-api/issues"
+  },
+  "homepage": "https://github.com/msd-pan/restful-api#readme",
+  "dependencies": {
+    "body-parser": "^1.20.3",
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
+}
