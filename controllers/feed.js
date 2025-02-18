@@ -7,8 +7,16 @@ const Post = require("../models/post");
 
 exports.getPosts = async (req, res, next) => {
   try {
-    const posts = await Post.find();
-    res.status(200).json({ message: "Fetched posts successfully", posts });
+    const currentPage = req.query.page || 1;
+    const perPage = 2;
+
+    const totalItems = await Post.find().countDocuments();
+    const posts = await Post.find()
+      .skip((currentPage - 1) * perPage)
+      .limit(perPage);
+    res
+      .status(200)
+      .json({ message: "Fetched posts successfully", posts, totalItems });
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
