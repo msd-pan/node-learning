@@ -1,6 +1,17 @@
 exports.getPosts = async (req, res, next) => {
   res.status(200).json({
-    posts: [{ title: "first product", content: "this is the first post!" }],
+    posts: [
+      {
+        _id: "1",
+        title: "first product",
+        content: "this is the first post!",
+        imageUrl: "images/orange-tabby-cat.jpg",
+        creator: {
+          name: "xiaoka",
+        },
+        createdAt: new Date(),
+      },
+    ],
   });
 };
 
