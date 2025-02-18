@@ -15,19 +15,21 @@ exports.getPosts = async (req, res, next) => {
   });
 };
 
-exports.postPost = async (req, res, next) => {
+exports.createPost = async (req, res, next) => {
   const title = req.body.title;
   const content = req.body.content;
 
   //   create post in db
   res.status(201).json({
     message: "Post created successfully!",
-    posts: [
-      {
-        id: new Date().toString(),
-        title,
-        content,
+    post: {
+      _id: new Date().toString(),
+      title,
+      content,
+      creator: {
+        name: "xiaoka",
       },
-    ],
+      createdAt: new Date(),
+    },
   });
 };
