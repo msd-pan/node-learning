@@ -3,20 +3,15 @@ const { validationResult } = require("express-validator");
 const Post = require("../models/post");
 
 exports.getPosts = async (req, res, next) => {
-  res.status(200).json({
-    posts: [
-      {
-        _id: "1",
-        title: "first product",
-        content: "this is the first post!",
-        imageUrl: "images/orange-tabby-cat.jpg",
-        creator: {
-          name: "xiaoka",
-        },
-        createdAt: new Date(),
-      },
-    ],
-  });
+  try {
+    const posts = await Post.find();
+    res.status(200).json({ message: "Fetched posts successfully", posts });
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
 };
 
 exports.createPost = async (req, res, next) => {
@@ -45,6 +40,24 @@ exports.createPost = async (req, res, next) => {
       message: "Post created successfully!",
       post: result,
     });
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};
+
+exports.getPost = async (req, res, next) => {
+  try {
+    const { postId } = req.params;
+    const post = await Post.findById(postId);
+    if (!post) {
+      const error = new Error("Could not find post.");
+      error.statusCode = 404;
+      throw error;
+    }
+    res.status(200).json({ message: "Fetched post successfully", post });
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
