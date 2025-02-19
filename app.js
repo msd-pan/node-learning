@@ -67,12 +67,7 @@ const startServer = async () => {
   try {
     await mongoose.connect(MONGODB_URI);
     const server = app.listen(3001);
-    const io = require("socket.io")(server, {
-      cors: {
-        origin: "http://localhost:3000", // Allow  cors requests from your frontend
-        methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
-      },
-    });
+    const io = require("./socket").init(server);
     io.on("connection", (socket) => {
       console.log("Client connected!");
     });
