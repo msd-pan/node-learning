@@ -1,6 +1,7 @@
 const { validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
-// bcrypt的3.0版本似乎不能用
+// bcrypt的3.0版本似乎不能用(需要查询使用方法)
+const jwt = require("jsonwebtoken");
 
 const User = require("../models/user");
 
@@ -44,6 +45,13 @@ exports.login = async (req, res, next) => {
       error.statusCode = 401;
       throw error;
     }
+    const token = jwt.sign(
+      { emial: user.email, userId: user._id.toString() },
+      "somesupersecretsecret",
+      { expiresIn: "1h" }
+    );
+
+    res.status(200).json({ token, userId: user._id.toString() });
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
