@@ -124,25 +124,42 @@ class Feed extends Component {
     formData.append("title", postData.title);
     formData.append("content", postData.content);
     formData.append("image", postData.image);
-    let url = "http://localhost:3001/feed/post";
-    let method = "POST";
-    if (this.state.editPost) {
-      url = "http://localhost:3001/feed/post/" + this.state.editPost._id;
-      method = "PUT";
-    }
 
-    fetch(url, {
-      method,
-      body: formData,
-      headers: { Authorization: "Bearer " + this.props.token },
+    let graphqlQuery = {
+      query: `
+      mutation {
+        createPost( postInput: {title: "${postData.title}", imageUrl: "test url", content: "${postData.content}"}) {
+          _id
+          title
+          content
+          creator {
+            name
+          }
+          createdAt
+        }
+      }
+    `,
+    };
+    fetch("http://localhost:3001/graphql", {
+      method: "POST",
+      headers: {
+        Authorization: "Bearer " + this.props.token,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(graphqlQuery),
     })
       .then((res) => {
-        if (res.status !== 200 && res.status !== 201) {
-          throw new Error("Creating or editing a post failed!");
-        }
         return res.json();
       })
       .then((resData) => {
+        if (resData.errors && resData.errors[0].status === 422) {
+          throw new Error(
+            "Validation failed. Make sure the email address isn't used yet!"
+          );
+        }
+        if (resData.errors) {
+          throw new Error("Post creation failed!");
+        }
         console.log(resData);
         const post = {
           _id: resData.post._id,
