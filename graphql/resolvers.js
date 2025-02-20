@@ -3,7 +3,7 @@ const validator = require("validator");
 const jwt = require("jsonwebtoken");
 
 const User = require("../models/user");
-const bcryptjs = require("bcryptjs");
+const Post = require("../models/post");
 
 module.exports = {
   createUser: async ({ userInput }, req) => {
@@ -63,5 +63,42 @@ module.exports = {
     );
 
     return { token, userId: user._id.toString() };
+  },
+
+  createPost: async ({ postInput }, req) => {
+    const errors = [];
+    if (
+      validator.isEmpty(postInput.title) ||
+      !validator.isLength(postInput.title, { min: 5 })
+    ) {
+      errors.push({ message: "Title is invalid." });
+    }
+    if (
+      validator.isEmpty(postInput.content) ||
+      !validator.isLength(postInput.content, { min: 5 })
+    ) {
+      errors.push({ message: "Content is invalid!" });
+    }
+    if (errors.length > 0) {
+      const error = new Error("Invalid input.");
+      error.data = errors;
+      error.code = 422;
+      throw error;
+    }
+
+    const post = new Post({
+      title: postInput.title,
+      imageUrl: postInput.imageUrl,
+      content: postInput.content,
+    });
+    const createdPost = await post.save();
+    // Add post to users' posts
+
+    return {
+      ...createdPost._doc,
+      _id: createdPost._id.toString(),
+      createdAt: createdPost.createdAt.toISOString(),
+      updatedAt: createdPost.updatedAt.toISOString(),
+    };
   },
 };
