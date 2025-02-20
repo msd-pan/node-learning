@@ -9,7 +9,7 @@ module.exports = {
 
     const errors = [];
     if (!validator.isEmail(userInput.email)) {
-      errors.push({ message: "E-mial os invalid." });
+      errors.push({ message: "E-mial is invalid." });
     }
     if (
       validator.isEmpty(userInput.password) ||
@@ -19,6 +19,8 @@ module.exports = {
     }
     if (errors.length > 0) {
       const error = new Error("Invalid input at password.");
+      error.data = errors;
+      error.code = 422;
       throw error;
     }
 
