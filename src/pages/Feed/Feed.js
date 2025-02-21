@@ -22,17 +22,30 @@ class Feed extends Component {
   };
 
   componentDidMount() {
-    fetch("http://localhost:3001/auth/status", {
-      headers: { Authorization: "Bearer " + this.props.token },
-    })
-      .then((res) => {
-        if (res.status !== 200) {
-          throw new Error("Failed to fetch user status.");
+    const graphqlQuery = {
+      query: `
+        {
+          user {
+            status
+          }
         }
-        return res.json();
-      })
+      `,
+    };
+    fetch("http://localhost:3001/graphql", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + this.props.token,
+      },
+      body: JSON.stringify(graphqlQuery),
+    })
+      .then((res) => res.json())
       .then((resData) => {
-        this.setState({ status: resData.status });
+        console.log(resData);
+        if (resData.errors) {
+          throw new Error("Status fetch failed!");
+        }
+        this.setState({ status: resData.data.user.status });
       })
       .catch(this.catchError);
 
@@ -100,23 +113,30 @@ class Feed extends Component {
 
   statusUpdateHandler = (event) => {
     event.preventDefault();
-    fetch("http://localhost:3001/auth/status", {
-      method: "PATCH",
+    const graphqlQuery = {
+      query: `
+        mutation UpdateStatus($status: String!) {
+          updateStatus(status: $status) {
+            status
+          }
+        }`,
+      variables: {
+        status: this.state.status,
+      },
+    };
+    fetch("http://localhost:3001/graphql", {
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: "Bearer " + this.props.token,
       },
-      body: JSON.stringify({
-        status: this.state.status,
-      }),
+      body: JSON.stringify(graphqlQuery),
     })
-      .then((res) => {
-        if (res.status !== 200 && res.status !== 201) {
-          throw new Error("Can't update status!");
-        }
-        return res.json();
-      })
+      .then((res) => res.json())
       .then((resData) => {
+        if (resData.errors) {
+          throw new Error("Status update failed!");
+        }
         console.log(resData);
       })
       .catch(this.catchError);
