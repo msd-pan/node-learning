@@ -24,11 +24,11 @@ class Feed extends Component {
   componentDidMount() {
     const graphqlQuery = {
       query: `
-        {
-          user {
-            status
-          }
-        }
+        query {
+              user {
+                status
+              }
+            }
       `,
     };
     fetch("http://localhost:3001/graphql", {
@@ -68,8 +68,8 @@ class Feed extends Component {
 
     const graphqlQuery = {
       query: `
-            {
-              posts(page: ${page}) {
+            query GetPosts ($page: Int!){
+              posts(page: $page) {
                 posts {
                   _id
                   title
@@ -83,6 +83,9 @@ class Feed extends Component {
               totalPosts}
             }
           `,
+      variables: {
+        page,
+      },
     };
     fetch("http://localhost:3001/graphql", {
       method: "POST",
@@ -179,10 +182,10 @@ class Feed extends Component {
     })
       .then((res) => res.json())
       .then((fileResData) => {
-        const imageUrl = fileResData.filePath;
+        const imageUrl = fileResData.filePath || "undefined";
         let graphqlQuery = {
           query: `
-            mutation CreatePost($title: String!, $imageUrl: String!, $content: String!) {
+            mutation CreatePost($title: String!, $imageUrl: String, $content: String!) {
               createPost(postInput: {title: $title, imageUrl: $imageUrl, content: $content}) {
                 _id
                 title
