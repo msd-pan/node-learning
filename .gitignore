@@ -2,7 +2,7 @@
 node_modules/
 
 # 忽略环境配置文件
-.env
+
 
 # 忽略日志文件
 *.log
