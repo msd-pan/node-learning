@@ -3,6 +3,7 @@ require("dotenv").config();
 // 引入Node.js核心模块 'path'，用于处理文件和目录路径
 // Import Node.js core module 'path' for handling file and directory paths
 const path = require("path");
+const fs = require("fs");
 
 // 引入安装的第三方模块 'express' 和 'body-parser'
 // Import third-party modules 'express' and 'body-parser'
@@ -16,6 +17,7 @@ const flash = require("connect-flash");
 const multer = require("multer");
 const helmet = require("helmet");
 const compression = require("compression");
+const morgan = require("morgan");
 
 // 引入自定义的错误控制器
 // Import custom error controller
@@ -79,8 +81,14 @@ const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
 const authRoutes = require("./routes/auth");
 
+const accessLogStream = fs.createWriteStream(
+  path.join(__dirname, "access.log"),
+  { flags: "a" }
+);
+
 app.use(helmet());
 app.use(compression());
+app.use(morgan("combined", { stream: accessLogStream }));
 
 // 使用 body-parser 解析表单数据
 // Use body-parser to parse incoming form data
