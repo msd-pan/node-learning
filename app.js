@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 // 引入Node.js核心模块 'path'，用于处理文件和目录路径
 // Import Node.js core module 'path' for handling file and directory paths
 const path = require("path");
@@ -18,8 +20,9 @@ const multer = require("multer");
 const errorController = require("./controllers/error");
 const User = require("./models/user");
 
-const MONGODB_URI =
-  "mongodb+srv://xiaoka:kjnDrVAOaVXZdbQk@cluster0.0bsg4.mongodb.net/shop?retryWrites=true&w=majority&appName=Cluster0";
+console.log(process.env.NODE_ENV);
+
+const MONGODB_URI = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0.0bsg4.mongodb.net/${process.env.MONGO_DEFAULT_DATABASE}?retryWrites=true&w=majority&appName=Cluster0`;
 
 // 创建Express应用实例
 // Create an Express application instance
@@ -157,7 +160,7 @@ const satrtServer = async () => {
   try {
     await mongoose.connect(MONGODB_URI);
 
-    app.listen(3000);
+    app.listen(process.env.PORT || 3000);
   } catch (err) {
     console.log(err);
   }
