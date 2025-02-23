@@ -15,6 +15,7 @@ const csrf = require("csurf");
 const flash = require("connect-flash");
 const multer = require("multer");
 const helmet = require("helmet");
+const compression = require("compression");
 
 // 引入自定义的错误控制器
 // Import custom error controller
@@ -79,6 +80,7 @@ const shopRoutes = require("./routes/shop");
 const authRoutes = require("./routes/auth");
 
 app.use(helmet());
+app.use(compression());
 
 // 使用 body-parser 解析表单数据
 // Use body-parser to parse incoming form data
