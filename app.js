@@ -4,6 +4,7 @@ require("dotenv").config();
 // Import Node.js core module 'path' for handling file and directory paths
 const path = require("path");
 const fs = require("fs");
+const https = require("https");
 
 // 引入安装的第三方模块 'express' 和 'body-parser'
 // Import third-party modules 'express' and 'body-parser'
@@ -35,6 +36,9 @@ const app = express();
 const store = new MongoDBStore({ uri: MONGODB_URI, collection: "sessions" });
 
 const csrfProtection = csrf();
+
+const privateKey = fs.readFileSync("server.key");
+const certificate = fs.readFileSync("server.cert");
 
 const fileStorage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -173,6 +177,9 @@ const satrtServer = async () => {
   try {
     await mongoose.connect(MONGODB_URI);
 
+    // https
+    //   .createServer({ key: privateKey, cert: certificate }, app)
+    //   .listen(process.env.PORT || 3000);
     app.listen(process.env.PORT || 3000);
   } catch (err) {
     console.log(err);
