@@ -25,4 +25,27 @@ describe("Auth middleware", () => {
       authMiddleware(req, {}, () => {}).toThrow();
     });
   });
+
+  test("shoule throw an error if the token cannot be varified", () => {
+    const req = {
+      get: (headerName) => {
+        return "Bearer xyz";
+      },
+    };
+
+    expect(() => {
+      authMiddleware(req, {}, () => {}).toThrow();
+    });
+  });
+
+  test("shoule yield a userId after decoding the token", () => {
+    const req = {
+      get: (headerName) => {
+        return "Bearer ahdsjklmcdpijcopdjk";
+      },
+    };
+    authMiddleware(req, {}, () => {});
+
+    expect(req).toHaveProperty("userId");
+  });
 });
