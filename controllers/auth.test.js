@@ -36,8 +36,25 @@ describe("Auth controller - Login", () => {
         password: "tester",
         name: "Test",
         posts: [],
+        _id: "67b684bc589ddafaca4907f1",
       });
       await user.save();
+
+      const req = { userId: "67b684bc589ddafaca4907f1" };
+      const res = {
+        statusCode: 500,
+        userStatus: null,
+        status: function (code) {
+          this.statusCode = code;
+          return this;
+        },
+        json: function (data) {
+          this.userStatus = data.status;
+        },
+      };
+      await AuthController.getUserStatus(req, res, () => {});
+      expect(res.statusCode).toEqual(200);
+      expect(res.userStatus).toEqual("I am new!");
     } catch (err) {
       console.log(err);
     }
