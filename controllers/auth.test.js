@@ -1,3 +1,5 @@
+const mongoose = require("mongoose");
+
 const AuthController = require("../controllers/auth");
 const User = require("../models/user");
 
@@ -22,5 +24,22 @@ describe("Auth controller - Login", () => {
     }
 
     User.findOne.mockRestore();
+  });
+
+  test("should send a response with a valid user status for an existing user", async () => {
+    try {
+      await mongoose.connect(
+        "mongodb+srv://xiaoka:kjnDrVAOaVXZdbQk@cluster0.0bsg4.mongodb.net/test-messages?retryWrites=true&w=majority&appName=Cluster0"
+      );
+      const user = new User({
+        email: "test@test.com",
+        password: "tester",
+        name: "Test",
+        posts: [],
+      });
+      await user.save();
+    } catch (err) {
+      console.log(err);
+    }
   });
 });
