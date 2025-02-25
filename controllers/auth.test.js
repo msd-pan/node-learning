@@ -55,6 +55,8 @@ describe("Auth controller - Login", () => {
       await AuthController.getUserStatus(req, res, () => {});
       expect(res.statusCode).toEqual(200);
       expect(res.userStatus).toEqual("I am new!");
+      await User.deleteMany({});
+      await mongoose.disconnect();
     } catch (err) {
       console.log(err);
     }
