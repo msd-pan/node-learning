@@ -14,6 +14,7 @@
     "type-script": "file:"
   },
   "devDependencies": {
+    "@types/body-parser": "^1.19.5",
     "@types/express": "^5.0.0",
     "@types/node": "^22.13.5"
   }
